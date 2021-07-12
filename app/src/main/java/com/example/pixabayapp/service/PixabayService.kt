@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface PixabayService {
 
     @GET("/api/?key=22450368-6657e5796f35eecf6a114874a&image_type=photo")
-    suspend fun searchImageByTerm(@Query("q") query: String): Response<PixabayResponse>
+    suspend fun searchImage(@Query("q") query: String): Response<PixabayResponse>
 
     companion object {
 
