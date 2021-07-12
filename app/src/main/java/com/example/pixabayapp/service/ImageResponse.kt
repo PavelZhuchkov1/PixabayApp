@@ -5,9 +5,8 @@ data class PixabayResponse(
     val hits: List<PixabayImage>) {
 
     data class PixabayImage(
-        val id: Int,
         val previewURL: String,
         val tags: String,
-        val likes: Int
+        val likes: String
         )
 }
