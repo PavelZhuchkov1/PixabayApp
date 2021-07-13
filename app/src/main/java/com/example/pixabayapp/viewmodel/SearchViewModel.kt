@@ -2,11 +2,19 @@ package com.example.pixabayapp.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.pixabayapp.repository.PixabayRepo
 import com.example.pixabayapp.service.PixabayResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel : ViewModel() {
     var pixabayRepo: PixabayRepo? = null
+    val searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
 
     data class ImageSummaryViewData(
         var previewUrl: String? = "",
@@ -22,17 +30,18 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         )
     }
 
-    suspend fun searchImage(query: String): List<ImageSummaryViewData> {
+    fun searchImage(query: String) {
+        viewModelScope.launch {
+            val results = pixabayRepo?.search(query)
+                if (results != null && results.isSuccessful) {
+                    val images = results.body()?.hits
 
-        val results = pixabayRepo?.search(query)
-        if (results != null && results.isSuccessful) {
-            val images = results.body()?.hits
-            if (!images.isNullOrEmpty()) {
-                return images.map {image ->
-                    pixabayImageToImageSummaryView(image)
+                        searchResultFlow.value = (images?.map {image ->
+                            pixabayImageToImageSummaryView(image)
+                        } ?: emptyList())
+
                 }
-            }
+
         }
-        return emptyList()
     }
 }

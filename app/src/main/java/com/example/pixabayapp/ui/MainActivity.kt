@@ -5,11 +5,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.R
@@ -20,6 +24,7 @@ import com.example.pixabayapp.service.PixabayService
 import com.example.pixabayapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,51 +39,30 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.editText.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    performSearch(binding.editText.text.toString())
+                    return true
+                }
+                return false
+            }
+        })
         setContentView(binding.root)
-        setupToolbar()
         setupViewModels()
         updateControls()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_search, menu)
-        val searchMenuItem = menu.findItem(R.id.search_item)
-        val searchView = searchMenuItem?.actionView as SearchView
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        return true
-
-    }
-
-    private fun performSearch(query: String) {
-        showProgressBar()
-        GlobalScope.launch {
-            val results = searchViewModel.searchImage(query)
-            withContext(Dispatchers.Main) {
+        lifecycleScope.launchWhenCreated {
+            searchViewModel.searchResultFlow.collectLatest {
                 hideProgressBar()
-                binding.toolbar.title = query
-                imageListAdapter.setSearchData(results)
+                imageListAdapter.setSearchData(it)
             }
         }
     }
 
-    private fun handleIntent(intent: Intent) {
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY) ?: return
-            performSearch(query)
-        }
-    }
+    private fun performSearch(query: String) {
+        showProgressBar()
+        searchViewModel.searchImage(query)
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
     }
 
     private fun setupViewModels() {
@@ -98,7 +82,6 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     }
 
     override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
-
     }
 
     private fun showProgressBar() {
