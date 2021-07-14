@@ -39,16 +39,8 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.editText.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    performSearch(binding.editText.text.toString())
-                    return true
-                }
-                return false
-            }
-        })
         setContentView(binding.root)
+        setupListeners()
         setupViewModels()
         updateControls()
         lifecycleScope.launchWhenCreated {
@@ -57,6 +49,31 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
                 imageListAdapter.setSearchData(it)
             }
         }
+    }
+
+    private fun setupListeners() {
+        binding.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                performSearch(s.toString())
+            }
+
+        })
+        //This code for press enter search
+//        binding.editText.setOnKeyListener(object : View.OnKeyListener {
+//            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+//                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+//                    performSearch(binding.editText.text.toString())
+//                    return true
+//                }
+//                return false
+//            }
+//        })
     }
 
     private fun performSearch(query: String) {

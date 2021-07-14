@@ -19,7 +19,7 @@ class SearchViewModel : ViewModel() {
     data class ImageSummaryViewData(
         var previewUrl: String? = "",
         var tags: String? = "",
-        var likes: String? = "" //Int?
+        var likes: String? = ""
     )
 
     private fun pixabayImageToImageSummaryView(pixabayImage: PixabayResponse.PixabayImage): ImageSummaryViewData {
