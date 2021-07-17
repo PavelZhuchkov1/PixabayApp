@@ -33,7 +33,11 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
-    private val searchViewModel by viewModels<SearchViewModel>()
+    private val service = PixabayService.instance
+    private val pixabayRepo: PixabayRepo = PixabayRepo(service)
+    private val searchViewModel by viewModels<SearchViewModel> {
+        SearchViewModel.Factory(pixabayRepo)
+    }
     private lateinit var imageListAdapter: ImageListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +45,6 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupListeners()
-        setupViewModels()
         updateControls()
         lifecycleScope.launchWhenCreated {
             searchViewModel.searchResultFlow.collectLatest {
@@ -80,11 +83,6 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
         showProgressBar()
         searchViewModel.searchImage(query)
 
-    }
-
-    private fun setupViewModels() {
-        val service = PixabayService.instance
-        searchViewModel.pixabayRepo = PixabayRepo(service)
     }
 
     private fun updateControls() {
