@@ -8,7 +8,7 @@ import com.example.pixabayapp.service.PixabayResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val pixabayRepo: PixabayRepo?) : ViewModel() {
+class SearchViewModel(private val pixabayRepo: PixabayRepo) : ViewModel() {
     val searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
 
     data class ImageSummaryViewData(
@@ -35,13 +35,6 @@ class SearchViewModel(private val pixabayRepo: PixabayRepo?) : ViewModel() {
 
                 }
 
-        }
-    }
-
-    class Factory(private val pixabayRepo: PixabayRepo) : ViewModelProvider.Factory {
-
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SearchViewModel(pixabayRepo) as T
         }
     }
 }

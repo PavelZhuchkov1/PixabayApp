@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.R
+import com.example.pixabayapp.ViewModelFactory
 import com.example.pixabayapp.adapter.ImageListAdapter
 import com.example.pixabayapp.databinding.ActivityMainBinding
 import com.example.pixabayapp.repository.PixabayRepo
@@ -33,10 +34,10 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
-    private val service = PixabayService.instance
-    private val pixabayRepo: PixabayRepo = PixabayRepo(service)
     private val searchViewModel by viewModels<SearchViewModel> {
-        SearchViewModel.Factory(pixabayRepo)
+        val service = PixabayService.instance
+        val pixabayRepo = PixabayRepo(service)
+        ViewModelFactory(pixabayRepo, this)
     }
     private lateinit var imageListAdapter: ImageListAdapter
 
