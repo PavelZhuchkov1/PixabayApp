@@ -26,7 +26,6 @@ class ImageListAdapter(
     ) : RecyclerView.ViewHolder(databinding.root) {
         var imageSummaryViewData: SearchViewModel.ImageSummaryViewData? = null
         val tagsTextView: TextView = databinding.tags
-        val likesTextView: TextView = databinding.likes
         val imageImageView : ImageView = databinding.image
 
         init {
@@ -53,10 +52,9 @@ class ImageListAdapter(
         val searchViewList = imageSummaryViewList ?: return
         val searchView = searchViewList[position]
         holder.imageSummaryViewData = searchView
-        holder.tagsTextView.text = searchView.tags
-        holder.likesTextView.text = searchView.likes
+        holder.tagsTextView.text = searchView.photographer
         Glide.with(parentActivity)
-            .load(searchView.previewUrl)
+            .load(searchView.url)
             .into(holder.imageImageView)
     }
 

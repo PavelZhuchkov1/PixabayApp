@@ -5,19 +5,22 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface PixabayService {
 
-    @GET("/api/?key=22450368-6657e5796f35eecf6a114874a&image_type=photo")
-    suspend fun searchImage(@Query("q") query: String): Response<PixabayResponse>
+    @Headers("Authorization: 563492ad6f9170000100000102d7eaa21fb447e9a40e6a64eaefe65c")
+    @GET("/v1/search")
+    suspend fun searchImage(@Query("query") query: String): Response<PixabayResponse>
 
     companion object {
 
         val instance: PixabayService by lazy {
 
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://pixabay.com")
+                .baseUrl("https://api.pexels.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             retrofit.create(PixabayService::class.java)
