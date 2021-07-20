@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.R
+import com.example.pixabayapp.ViewModelFactory
 import com.example.pixabayapp.adapter.ImageListAdapter
 import com.example.pixabayapp.databinding.ActivityMainBinding
 import com.example.pixabayapp.repository.PixabayRepo
@@ -33,7 +34,11 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
-    private val searchViewModel by viewModels<SearchViewModel>()
+    private val searchViewModel by viewModels<SearchViewModel> {
+        val service = PixabayService.instance
+        val pixabayRepo = PixabayRepo(service)
+        ViewModelFactory(pixabayRepo, this)
+    }
     private lateinit var imageListAdapter: ImageListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +46,6 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupListeners()
-        setupViewModels()
         updateControls()
         lifecycleScope.launchWhenCreated {
             searchViewModel.searchResultFlow.collectLatest {
@@ -80,11 +84,6 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
         showProgressBar()
         searchViewModel.searchImage(query)
 
-    }
-
-    private fun setupViewModels() {
-        val service = PixabayService.instance
-        searchViewModel.pixabayRepo = PixabayRepo(service)
     }
 
     private fun updateControls() {
