@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.R
 import com.example.pixabayapp.ViewModelFactory
 import com.example.pixabayapp.adapter.ImageListAdapter
+import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.ActivityMainBinding
 import com.example.pixabayapp.repository.PixabayRepo
 import com.example.pixabayapp.service.PixabayService
@@ -35,8 +36,9 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
 
     private lateinit var binding: ActivityMainBinding
     private val searchViewModel by viewModels<SearchViewModel> {
-        val service = PixabayService.instance
-        val pixabayRepo = PixabayRepo(service)
+//        val service = PixabayService.instance
+//        val pixabayRepo = PixabayRepo(service)
+        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
         ViewModelFactory(pixabayRepo, this)
     }
     private lateinit var imageListAdapter: ImageListAdapter
