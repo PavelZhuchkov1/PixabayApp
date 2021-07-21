@@ -6,6 +6,8 @@ import com.example.pixabayapp.ui.MainActivity
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Component(modules = [AppModule::class])
 interface AppComponent {
@@ -17,6 +19,10 @@ object AppModule {
 
     @Provides
     fun providePixabayService(): PixabayService {
-        return PixabayService.instance
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.pexels.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofit.create(PixabayService::class.java)
     }
 }
