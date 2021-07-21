@@ -36,16 +36,20 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
-    @Inject
-    lateinit var pixabayRepo: PixabayRepo
-    private val searchViewModel by viewModels<SearchViewModel> {
-//        val service = PixabayService.instance
-//        val pixabayRepo = PixabayRepo(service)
-
-//        Without @Inject
-//        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
-        ViewModelFactory(pixabayRepo, this)
+    private val searchViewModel: SearchViewModel by viewModels{
+        factory.create()
     }
+
+    @Inject
+    lateinit var factory: ViewModelFactory.Factory
+//    private val searchViewModel by viewModels<SearchViewModel> {
+////        val service = PixabayService.instance
+////        val pixabayRepo = PixabayRepo(service)
+//
+////        Without @Inject
+////        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
+//        ViewModelFactory(pixabayRepo)
+//    }
     private lateinit var imageListAdapter: ImageListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
