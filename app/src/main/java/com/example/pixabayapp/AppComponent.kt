@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Component(modules = [AppModule::class])
 interface AppComponent {
@@ -24,5 +25,10 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit.create(PixabayService::class.java)
+    }
+
+    @Provides
+    fun providePixabayRepo(pixabayService: PixabayService): PixabayRepo {
+        return PixabayRepo(pixabayService)
     }
 }
