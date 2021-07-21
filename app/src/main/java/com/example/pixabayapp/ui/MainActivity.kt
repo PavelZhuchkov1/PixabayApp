@@ -29,22 +29,28 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListener {
 
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
+    @Inject
+    lateinit var pixabayRepo: PixabayRepo
     private val searchViewModel by viewModels<SearchViewModel> {
 //        val service = PixabayService.instance
 //        val pixabayRepo = PixabayRepo(service)
-        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
+
+//        Without @Inject
+//        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
         ViewModelFactory(pixabayRepo, this)
     }
     private lateinit var imageListAdapter: ImageListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appComponent.inject(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupListeners()
