@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListe
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                performSearch(s.toString())
+            override fun afterTextChanged(s: Editable) {
+                if (s.length >= 3) performSearch(s.toString())
             }
 
         })
