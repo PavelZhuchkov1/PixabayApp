@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.R
 import com.example.pixabayapp.ViewModelFactory
 import com.example.pixabayapp.adapter.ImageListAdapter
+import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.ActivityMainBinding
 import com.example.pixabayapp.repository.PixabayRepo
 import com.example.pixabayapp.service.PixabayService
@@ -28,21 +29,32 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ImageListAdapter.ImageListAdapterListener {
 
     val TAG = javaClass.simpleName
 
     private lateinit var binding: ActivityMainBinding
-    private val searchViewModel by viewModels<SearchViewModel> {
-        val service = PixabayService.instance
-        val pixabayRepo = PixabayRepo(service)
-        ViewModelFactory(pixabayRepo, this)
+    private val searchViewModel: SearchViewModel by viewModels{
+        factory.create()
     }
+
+    @Inject
+    lateinit var factory: ViewModelFactory.Factory
+//    private val searchViewModel by viewModels<SearchViewModel> {
+////        val service = PixabayService.instance
+////        val pixabayRepo = PixabayRepo(service)
+//
+////        Without @Inject
+////        val pixabayRepo: PixabayRepo = appComponent.pixabayRepo
+//        ViewModelFactory(pixabayRepo)
+//    }
     private lateinit var imageListAdapter: ImageListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appComponent.inject(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupListeners()

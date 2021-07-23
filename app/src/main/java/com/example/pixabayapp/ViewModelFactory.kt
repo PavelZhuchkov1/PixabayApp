@@ -4,23 +4,27 @@ import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.pixabayapp.repository.PixabayRepo
 import com.example.pixabayapp.viewmodel.SearchViewModel
+import dagger.assisted.AssistedInject
+import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")
-class ViewModelFactory constructor(
+class ViewModelFactory(
     private val pixabayRepo: PixabayRepo,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ): T {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return SearchViewModel(pixabayRepo) as T
+    }
+
+    class Factory @Inject constructor(val pixabayRepo: PixabayRepo) {
+
+        fun create(): ViewModelFactory {
+            return ViewModelFactory(pixabayRepo)
+        }
     }
 
 }
