@@ -25,8 +25,8 @@ class SearchViewModel(private val pixabayRepo: PixabayRepo) : ViewModel() {
 
     fun searchImage(query: String) {
         viewModelScope.launch {
-            val results = pixabayRepo?.search(query)
-                if (results != null && results.isSuccessful) {
+            val results = pixabayRepo.search(query)
+                if (results.isSuccessful) {
                     val images = results.body()?.photos
 
                         searchResultFlow.value = (images?.map {image ->
