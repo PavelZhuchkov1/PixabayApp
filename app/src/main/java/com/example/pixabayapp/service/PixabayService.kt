@@ -11,7 +11,6 @@ import retrofit2.http.Query
 
 interface PixabayService {
 
-    @Headers("Authorization: 563492ad6f9170000100000102d7eaa21fb447e9a40e6a64eaefe65c")
     @GET("/v1/search")
     suspend fun searchImage(@Query("query") query: String): Response<PixabayResponse>
 }
