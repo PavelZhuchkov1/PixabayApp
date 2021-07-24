@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pixabayapp.databinding.SearchItemBinding
@@ -13,7 +14,7 @@ import com.example.pixabayapp.viewmodel.SearchViewModel
 class ImageListAdapter(
     private var imageSummaryViewList: List<SearchViewModel.ImageSummaryViewData>?,
     private val imageListAdapterListener: ImageListAdapterListener,
-    private val parentActivity: Activity
+    private val parentFragment: Fragment
 ) : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
     interface ImageListAdapterListener {
@@ -53,7 +54,7 @@ class ImageListAdapter(
         val searchView = searchViewList[position]
         holder.imageSummaryViewData = searchView
         holder.tagsTextView.text = searchView.photographer
-        Glide.with(parentActivity)
+        Glide.with(parentFragment)
             .load(searchView.url)
             .into(holder.imageImageView)
     }
