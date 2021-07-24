@@ -2,7 +2,7 @@ package com.example.pixabayapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.pixabayapp.repository.SearchRepo
+import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.viewmodel.SearchViewModel
 import javax.inject.Inject
 

@@ -2,8 +2,8 @@ package com.example.pixabayapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pixabayapp.repository.SearchRepo
-import com.example.pixabayapp.service.ImageResponse
+import com.example.pixabayapp.search.repository.SearchRepo
+import com.example.pixabayapp.search.service.ImageResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

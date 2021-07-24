@@ -1,4 +1,4 @@
-package com.example.pixabayapp.service
+package com.example.pixabayapp.search.service
 
 data class ImageResponse(val photos: List<SearchImage>) {
     data class SearchImage(

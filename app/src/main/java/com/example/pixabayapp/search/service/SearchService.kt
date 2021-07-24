@@ -1,4 +1,4 @@
-package com.example.pixabayapp.service
+package com.example.pixabayapp.search.service
 
 import retrofit2.Response
 import retrofit2.http.GET

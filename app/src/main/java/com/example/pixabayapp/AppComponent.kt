@@ -1,7 +1,7 @@
 package com.example.pixabayapp
 
-import com.example.pixabayapp.repository.SearchRepo
-import com.example.pixabayapp.service.SearchService
+import com.example.pixabayapp.search.repository.SearchRepo
+import com.example.pixabayapp.search.service.SearchService
 import com.example.pixabayapp.ui.SearchActivity
 import dagger.Component
 import dagger.Module
