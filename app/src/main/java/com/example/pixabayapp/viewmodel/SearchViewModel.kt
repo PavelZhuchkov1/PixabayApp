@@ -1,14 +1,13 @@
 package com.example.pixabayapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.pixabayapp.repository.PixabayRepo
-import com.example.pixabayapp.service.PixabayResponse
+import com.example.pixabayapp.repository.SearchRepo
+import com.example.pixabayapp.service.ImageResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val pixabayRepo: PixabayRepo) : ViewModel() {
+class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
     val searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
 
     data class ImageSummaryViewData(
@@ -16,16 +15,16 @@ class SearchViewModel(private val pixabayRepo: PixabayRepo) : ViewModel() {
         var photographer: String? = "",
     )
 
-    private fun pixabayImageToImageSummaryView(pixabayImage: PixabayResponse.PixabayImage): ImageSummaryViewData {
+    private fun pixabayImageToImageSummaryView(searchImage: ImageResponse.SearchImage): ImageSummaryViewData {
         return ImageSummaryViewData(
-            pixabayImage.src.small,
-            pixabayImage.photographer,
+            searchImage.src.small,
+            searchImage.photographer,
         )
     }
 
     fun searchImage(query: String) {
         viewModelScope.launch {
-            val results = pixabayRepo.search(query)
+            val results = searchRepo.search(query)
                 if (results.isSuccessful) {
                     val images = results.body()?.photos
 

@@ -1,7 +1,7 @@
 package com.example.pixabayapp.service
 
-data class PixabayResponse(val photos: List<PixabayImage>) {
-    data class PixabayImage(
+data class ImageResponse(val photos: List<SearchImage>) {
+    data class SearchImage(
         val url: String,
         val photographer: String,
         var src: ImageFile) {

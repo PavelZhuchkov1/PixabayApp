@@ -1,8 +1,8 @@
 package com.example.pixabayapp
 
-import com.example.pixabayapp.repository.PixabayRepo
-import com.example.pixabayapp.service.PixabayService
-import com.example.pixabayapp.ui.MainActivity
+import com.example.pixabayapp.repository.SearchRepo
+import com.example.pixabayapp.service.SearchService
+import com.example.pixabayapp.ui.SearchActivity
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -13,20 +13,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Component(modules = [AppModule::class, NetworkModule::class])
 interface AppComponent {
-    fun inject(mainActivity: MainActivity)
+    fun inject(searchActivity: SearchActivity)
 }
 
 @Module
 object AppModule {
 
     @Provides
-    fun providePixabayService(retrofit: Retrofit): PixabayService {
-        return retrofit.create(PixabayService::class.java)
+    fun provideSearchService(retrofit: Retrofit): SearchService {
+        return retrofit.create(SearchService::class.java)
     }
 
     @Provides
-    fun providePixabayRepo(pixabayService: PixabayService): PixabayRepo {
-        return PixabayRepo(pixabayService)
+    fun provideSearchRepo(searchService: SearchService): SearchRepo {
+        return SearchRepo(searchService)
     }
 }
 
