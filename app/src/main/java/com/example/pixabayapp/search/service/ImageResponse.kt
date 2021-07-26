@@ -5,6 +5,8 @@ data class ImageResponse(val photos: List<SearchImage>) {
         val url: String,
         val photographer: String,
         var src: ImageFile) {
-        data class ImageFile(val small: String)
+        data class ImageFile(
+            val original: String,
+            val small: String)
     }
 }

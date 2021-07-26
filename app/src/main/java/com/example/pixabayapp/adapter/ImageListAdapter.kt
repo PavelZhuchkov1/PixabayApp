@@ -1,6 +1,5 @@
 package com.example.pixabayapp.adapter
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -55,7 +54,7 @@ class ImageListAdapter(
         holder.imageSummaryViewData = searchView
         holder.tagsTextView.text = searchView.photographer
         Glide.with(parentFragment)
-            .load(searchView.url)
+            .load(searchView.small)
             .into(holder.imageImageView)
     }
 

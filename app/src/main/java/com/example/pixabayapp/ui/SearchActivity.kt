@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +22,7 @@ import com.example.pixabayapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(){
 
     val TAG = javaClass.simpleName
     private lateinit var binding: ActivitySearchBinding

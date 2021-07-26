@@ -8,8 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -110,6 +109,13 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
     }
 
     override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
+        val imageFragment = ImageFragment(imageSummaryViewData)
+        activity?.supportFragmentManager?.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_container_view, imageFragment)
+            addToBackStack(null)
+        }
+
     }
 
     private fun showProgressBar() {
