@@ -3,7 +3,6 @@ package com.example.pixabayapp
 import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.search.service.SearchService
 import com.example.pixabayapp.ui.ImageFragment
-import com.example.pixabayapp.ui.SearchActivity
 import com.example.pixabayapp.ui.SearchFragment
 import dagger.Component
 import dagger.Module
@@ -53,8 +52,8 @@ object NetworkModule {
         httpLoggingInterceptor: HttpLoggingInterceptor,
         headerInterceptor: HeaderInterceptor) : OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(headerInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
             .build()
     }
 

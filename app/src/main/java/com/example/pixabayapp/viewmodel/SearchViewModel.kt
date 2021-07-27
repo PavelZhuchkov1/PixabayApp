@@ -2,17 +2,20 @@ package com.example.pixabayapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pixabayapp.Error
 import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.search.service.ImageResponse
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.net.UnknownHostException
 
 class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
     private val _searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
     val searchResultFlow = _searchResultFlow.asStateFlow()
-    //val eventFlow = MutableSharedFlow<>
+    val errorFlow = MutableSharedFlow<Error>()
 
     data class ImageSummaryViewData(
         var original: String = "",
@@ -30,14 +33,14 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
 
     fun searchImage(query: String) {
         viewModelScope.launch {
-            val results = searchRepo.search(query)
-                if (results.isSuccessful) {
-                    val images = results.body()?.photos
-                        _searchResultFlow.value = (images?.map {image ->
-                            pixabayImageToImageSummaryView(image)
-                        } ?: emptyList())
-                }
-
+            try {
+                val results = searchRepo.search(query)
+                val images = results.photos
+                _searchResultFlow.value = (images.map {image ->
+                    pixabayImageToImageSummaryView(image)})
+            } catch (e: Exception) {
+                errorFlow.emit(Error.ConnectionError(message = "No Connection", e))
+            }
         }
     }
 }

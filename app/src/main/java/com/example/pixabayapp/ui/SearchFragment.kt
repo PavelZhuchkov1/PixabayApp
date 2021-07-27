@@ -12,13 +12,16 @@ import androidx.fragment.app.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pixabayapp.Error
 import com.example.pixabayapp.R
 import com.example.pixabayapp.ViewModelFactory
 import com.example.pixabayapp.adapter.ImageListAdapter
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentSearchBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.ImageListAdapterListener {
@@ -53,9 +56,18 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
         setupListeners()
         updateControls()
         lifecycleScope.launchWhenCreated {
-            searchViewModel.searchResultFlow.collectLatest {
-                hideProgressBar()
-                imageListAdapter.setSearchData(it)
+            launch {
+                searchViewModel.searchResultFlow.collectLatest {
+                    hideProgressBar()
+                    imageListAdapter.setSearchData(it)
+                }
+            }
+            launch {
+                searchViewModel.errorFlow.collectLatest {
+                    when (it) {
+                        is Error.ConnectionError -> Snackbar.make(binding.editText, "No Connection", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -74,7 +86,6 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
             }
 
             override fun afterTextChanged(s: Editable) {
-                Log.d(TAG, "afterTextChanged: test")
                 if (s.length >= 3) performSearch(s.toString())
             }
 
