@@ -1,6 +1,7 @@
 package com.example.pixabayapp
 
 import com.example.pixabayapp.search.repository.SearchRepo
+import com.example.pixabayapp.search.service.HeaderInterceptor
 import com.example.pixabayapp.search.service.SearchService
 import com.example.pixabayapp.ui.ImageFragment
 import com.example.pixabayapp.ui.SearchFragment
@@ -50,7 +51,8 @@ object NetworkModule {
     @Provides
     fun provideClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        headerInterceptor: HeaderInterceptor) : OkHttpClient {
+        headerInterceptor: HeaderInterceptor
+    ) : OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(headerInterceptor)
             .addInterceptor(httpLoggingInterceptor)

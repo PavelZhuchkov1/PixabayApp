@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pixabayapp.Error
 import com.example.pixabayapp.R
-import com.example.pixabayapp.ViewModelFactory
-import com.example.pixabayapp.adapter.ImageListAdapter
+import com.example.pixabayapp.viewmodel.ViewModelFactory
+import com.example.pixabayapp.ui.adapter.ImageListAdapter
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentSearchBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel

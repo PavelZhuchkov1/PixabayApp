@@ -1,4 +1,4 @@
-package com.example.pixabayapp.adapter
+package com.example.pixabayapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

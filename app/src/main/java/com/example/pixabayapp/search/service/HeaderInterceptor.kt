@@ -1,4 +1,4 @@
-package com.example.pixabayapp
+package com.example.pixabayapp.search.service
 
 import okhttp3.Interceptor
 import okhttp3.Response

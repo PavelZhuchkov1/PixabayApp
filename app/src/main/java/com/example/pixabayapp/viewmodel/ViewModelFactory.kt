@@ -1,9 +1,8 @@
-package com.example.pixabayapp
+package com.example.pixabayapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.pixabayapp.search.repository.SearchRepo
-import com.example.pixabayapp.viewmodel.SearchViewModel
 import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")

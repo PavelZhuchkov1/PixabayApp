@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.pixabayapp.R
-import com.example.pixabayapp.ViewModelFactory
+import com.example.pixabayapp.viewmodel.ViewModelFactory
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentImageBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
