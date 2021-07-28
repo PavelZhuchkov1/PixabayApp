@@ -1,5 +1,6 @@
 package com.example.pixabayapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pixabayapp.Error
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.lang.Exception
 import java.net.UnknownHostException
 
@@ -39,7 +41,10 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
                 _searchResultFlow.value = (images.map {image ->
                     pixabayImageToImageSummaryView(image)})
             } catch (e: Exception) {
-                errorFlow.emit(Error.ConnectionError(message = "No Connection", e))
+                when (e) {
+                    is UnknownHostException -> errorFlow.emit(Error.ConnectionError(message = "No Connection", e))
+                    is HttpException -> errorFlow.emit(Error.AuthorizationError(message = "Authorization error", e))
+                }
             }
         }
     }

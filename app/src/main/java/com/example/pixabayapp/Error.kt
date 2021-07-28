@@ -4,4 +4,5 @@ import java.lang.Exception
 
 sealed class Error {
     data class ConnectionError(val message: String, val cause: Exception? = null) : Error()
+    data class AuthorizationError(val message: String, val cause : Exception? = null) : Error()
 }
