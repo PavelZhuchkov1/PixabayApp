@@ -1,10 +1,14 @@
 package com.example.pixabayapp.ui
 
+import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.ImageView
+import androidx.core.view.MotionEventCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -15,12 +19,14 @@ import com.example.pixabayapp.databinding.FragmentImageBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
 import javax.inject.Inject
 
-class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewData) : Fragment(R.layout.fragment_image) {
+class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewData) : Fragment(R.layout.fragment_image){
 
+    val TAG = javaClass.simpleName
     private lateinit var binding: FragmentImageBinding
-    private val searchViewModel: SearchViewModel by viewModels{
-        factory.create()
-    }
+    private var x = 0.0f
+    private var y = 0.0f
+    private var dx = 0.0f
+    private var dy = 0.0f
 
     @Inject
     lateinit var factory: ViewModelFactory.Factory
@@ -38,10 +44,37 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Glide.with(this)
             .load(imageSummaryViewData.original)
             .into(binding.image)
+
+        binding.image.setOnTouchListener { v, event ->
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                x = event.x
+                y = event.y
+            }
+
+            if (event.action == MotionEvent.ACTION_MOVE) {
+                dx = event.x - x
+                dy = event.y - y
+
+                v.x = v.x + dx
+                v.y = v.y + dy
+
+                x = event.x
+                y = event.y
+            }
+
+            if (event.action == MotionEvent.ACTION_UP) {
+
+            }
+
+            true
+        }
     }
+
 }
