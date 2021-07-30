@@ -8,7 +8,7 @@ class HeaderInterceptor : Interceptor {
         proceed(
             request = chain.request()
             .newBuilder()
-            .addHeader("Authorization", "")
+            .addHeader("Authorization", "563492ad6f9170000100000102d7eaa21fb447e9a40e6a64eaefe65c")
             .build()
         )
     }
