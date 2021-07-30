@@ -53,24 +53,27 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
         binding.image.setOnTouchListener { v, event ->
 
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                x = event.rawX
-                y = event.rawY
-            }
+            when(event.action) {
 
-            if (event.action == MotionEvent.ACTION_MOVE) {
-                dx = event.rawX - x
-                dy = event.rawY - y
+                MotionEvent.ACTION_DOWN -> {
+                    Log.d(TAG, "onViewCreated: Action down")
+                    x = event.rawX
+                    y = event.rawY
+                }
 
-                v.x = v.x + dx
-                v.y = v.y + dy
+                MotionEvent.ACTION_MOVE -> {
+                    dx = event.rawX - x
+                    dy = event.rawY - y
 
-                x = event.rawX
-                y = event.rawY
+                    v.x = v.x + dx
+                    v.y = v.y + dy
+                    
+                    x = event.rawX
+                    y = event.rawY
+                }
             }
 
             true
         }
     }
-
 }
