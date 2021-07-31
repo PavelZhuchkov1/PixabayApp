@@ -1,16 +1,10 @@
 package com.example.pixabayapp.ui
 
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import androidx.core.view.MotionEventCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.pixabayapp.R
 import com.example.pixabayapp.viewmodel.ViewModelFactory
@@ -51,14 +45,17 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
             .load(imageSummaryViewData.original)
             .into(binding.image)
 
+        var alpha: Float
+        var imageY = 0.0f
         binding.image.setOnTouchListener { v, event ->
+
 
             when(event.action) {
 
                 MotionEvent.ACTION_DOWN -> {
-                    Log.d(TAG, "onViewCreated: Action down")
                     x = event.rawX
                     y = event.rawY
+                    imageY = v.y
                 }
 
                 MotionEvent.ACTION_MOVE -> {
@@ -67,9 +64,15 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
                     v.x = v.x + dx
                     v.y = v.y + dy
-                    
+
+                    alpha = v.y / imageY
+                    if (alpha <= 1.0f) {
+                        binding.root.background.alpha = (alpha * 255).toInt()
+                    }
+
                     x = event.rawX
                     y = event.rawY
+
                 }
             }
 

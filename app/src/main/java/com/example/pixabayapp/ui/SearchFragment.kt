@@ -125,7 +125,7 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
         val imageFragment = ImageFragment(imageSummaryViewData)
         activity?.supportFragmentManager?.commit {
             setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, imageFragment)
+            add(R.id.fragment_container_view, imageFragment)
             addToBackStack(null)
         }
 
