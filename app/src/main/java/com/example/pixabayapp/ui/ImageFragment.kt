@@ -21,9 +21,7 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
     private var y = 0.0f
     private var dx = 0.0f
     private var dy = 0.0f
-
-    @Inject
-    lateinit var factory: ViewModelFactory.Factory
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity as SearchActivity).appComponent.inject2(this)
@@ -45,7 +43,8 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
             .load(imageSummaryViewData.original)
             .into(binding.image)
 
-        var alpha: Float
+        var alpha = 1.0f
+        binding.root.background.alpha = (alpha * 255).toInt()
         var imageY = 0.0f
         binding.image.setOnTouchListener { v, event ->
 
@@ -63,7 +62,9 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
                     dy = event.rawY - y
 
                     v.x = v.x + dx
-                    v.y = v.y + dy
+                    if (v.y + dy >= 0) {
+                        v.y = v.y + dy
+                    }
 
                     alpha = v.y / imageY
                     if (alpha <= 1.0f) {
