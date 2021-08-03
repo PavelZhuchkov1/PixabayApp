@@ -1,25 +1,26 @@
 package com.example.pixabayapp.ui
 
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.pixabayapp.R
-import com.example.pixabayapp.viewmodel.ViewModelFactory
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentImageBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
-import javax.inject.Inject
+
 
 class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewData) : Fragment(R.layout.fragment_image){
 
     val TAG = javaClass.simpleName
     private lateinit var binding: FragmentImageBinding
-    private var x = 0.0f
     private var y = 0.0f
-    private var dx = 0.0f
     private var dy = 0.0f
     
     override fun onAttach(context: Context) {
@@ -45,6 +46,9 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
         var alpha = 1.0f
         binding.root.background.alpha = (alpha * 255).toInt()
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
         var imageY = 0.0f
         binding.image.setOnTouchListener { v, event ->
 
@@ -52,30 +56,61 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
             when(event.action) {
 
                 MotionEvent.ACTION_DOWN -> {
-                    x = event.rawX
                     y = event.rawY
                     imageY = v.y
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    dx = event.rawX - x
                     dy = event.rawY - y
 
-                    v.x = v.x + dx
-                    if (v.y + dy >= 0) {
-                        v.y = v.y + dy
+                    v.y = v.y + dy
+
+                    if (alpha <= 1.0) {
+                        alpha = v.y / imageY
+                    } else {
+                        alpha = (height - v.y)/(height - imageY)
                     }
 
-                    alpha = v.y / imageY
+                    if (alpha <= 0.0f || alpha >= height) {
+                        alpha = 0.0f
+                    }
+
                     if (alpha <= 1.0f) {
                         binding.root.background.alpha = (alpha * 255).toInt()
                     }
 
-                    x = event.rawX
                     y = event.rawY
 
                 }
+
+                MotionEvent.ACTION_UP -> {
+
+                    if (v.y <= 10.0f || v.y >= height - 500.0f) {
+                        activity?.supportFragmentManager?.popBackStackImmediate()
+                    } else {
+                        val changeAlpha = ValueAnimator.ofFloat(alpha, 1.0f)
+                        changeAlpha.addUpdateListener {
+                            val value = it.animatedValue as Float
+                            binding.root.background.alpha = (value * 255).toInt()
+                        }
+                        changeAlpha.duration = 400
+
+                        val moveImage = ValueAnimator.ofFloat(v.y, imageY)
+                        moveImage.addUpdateListener {
+                            val value = it.animatedValue as Float
+                            v.y = value
+                        }
+                        moveImage.duration = 400
+
+                        AnimatorSet().apply {
+                            play(changeAlpha).with(moveImage)
+                            start()
+                        }
+                    }
+                }
             }
+
+            Log.d(TAG, "onViewCreated: ${v.y}")
 
             true
         }
