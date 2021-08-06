@@ -4,11 +4,18 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.transition.TransitionInflater
 import android.view.*
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.pixabayapp.R
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentImageBinding
@@ -18,15 +25,17 @@ import kotlin.math.abs
 
 class ImageFragment : Fragment(R.layout.fragment_image){
 
+
     val TAG = javaClass.simpleName
     private lateinit var binding: FragmentImageBinding
     private var y = 0.0f
     private var dy = 0.0f
 
     companion object {
-        fun newInstance(imageSummaryViewData: SearchViewModel.ImageSummaryViewData): ImageFragment {
+        fun newInstance(imageSummaryViewData: SearchViewModel.ImageSummaryViewData, transitionName: String): ImageFragment {
             val args = Bundle()
             args.putString("original", imageSummaryViewData.original)
+            args.putString("transitionName", transitionName)
             val imageFragment = ImageFragment()
             imageFragment.arguments = args
             return imageFragment
@@ -36,6 +45,14 @@ class ImageFragment : Fragment(R.layout.fragment_image){
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity as SearchActivity).appComponent.inject2(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition = TransitionInflater.from(requireContext())
+                .inflateTransition(android.R.transition.explode)
+        }
     }
 
     override fun onCreateView(
@@ -50,8 +67,33 @@ class ImageFragment : Fragment(R.layout.fragment_image){
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setTransitionName(binding.image, arguments?.getString("transitionName"))
+        postponeEnterTransition()
         Glide.with(this)
             .load(arguments?.getString("original"))
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
+            })
             .into(binding.image)
 
         var alpha = 1.0f

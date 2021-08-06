@@ -1,13 +1,17 @@
 package com.example.pixabayapp.ui
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,6 +25,9 @@ import com.example.pixabayapp.databinding.FragmentSearchBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
 import com.example.pixabayapp.viewmodel.Utils
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,6 +63,10 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
         updateControls()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition = TransitionInflater.from(requireContext())
+                .inflateTransition(android.R.transition.explode)
+        }
         lifecycleScope.launchWhenCreated {
             launch {
                 searchViewModel.searchResultFlow.collectLatest {
@@ -107,11 +118,13 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
         }
     }
 
-    override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
+    override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData, imageView: ImageView) {
+
         Utils.hideKeyboardFrom(context, this.view?.rootView)
-        val imageFragment = ImageFragment.newInstance(imageSummaryViewData)
+        val imageFragment = ImageFragment.newInstance(imageSummaryViewData, ViewCompat.getTransitionName(imageView)!!)
         activity?.supportFragmentManager?.commit {
             setReorderingAllowed(true)
+            addSharedElement(imageView, ViewCompat.getTransitionName(imageView)!!)
             add(R.id.fragment_container_view, imageFragment)
             addToBackStack(null)
         }

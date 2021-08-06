@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,7 +18,7 @@ class ImageListAdapter(
 ) : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
     interface ImageListAdapterListener {
-        fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData)
+        fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData, imageView: ImageView)
     }
 
     inner class ViewHolder(
@@ -31,7 +32,7 @@ class ImageListAdapter(
         init {
             databinding.searchItem.setOnClickListener {
                 imageSummaryViewData?.let {
-                    imageListAdapterListener.onShowDetails(it)
+                    imageListAdapterListener.onShowDetails(it, imageImageView)
                 }
             }
         }
@@ -51,8 +52,11 @@ class ImageListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val searchViewList = imageSummaryViewList ?: return
         val searchView = searchViewList[position]
+        ViewCompat.setTransitionName(holder.imageImageView, position.toString())
         holder.imageSummaryViewData = searchView
         holder.tagsTextView.text = searchView.photographer
+
+
         Glide.with(parentFragment)
             .load(searchView.small)
             .into(holder.imageImageView)
