@@ -111,14 +111,15 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
     }
 
     private fun updateControls() {
-        binding.recyclerView.setHasFixedSize(true)
-        val layoutManager = LinearLayoutManager(activity)
-        binding.recyclerView.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(binding.recyclerView.context,
-            layoutManager.orientation)
-        binding.recyclerView.addItemDecoration(dividerItemDecoration)
-        imageListAdapter = ImageListAdapter(null, this, this)
-        binding.recyclerView.adapter = imageListAdapter
+        binding.recyclerView.apply {
+            setHasFixedSize(true)
+            val linearLayoutManager = LinearLayoutManager(activity)
+            layoutManager = linearLayoutManager
+            addItemDecoration(DividerItemDecoration(this.context, linearLayoutManager.orientation))
+            imageListAdapter = ImageListAdapter(null,
+                this@SearchFragment, this@SearchFragment)
+            adapter = imageListAdapter
+        }
     }
 
     override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
