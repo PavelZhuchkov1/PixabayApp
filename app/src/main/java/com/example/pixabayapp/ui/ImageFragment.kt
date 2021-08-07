@@ -14,6 +14,7 @@ import com.example.pixabayapp.R
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentImageBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
+import kotlin.math.abs
 
 
 class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewData) : Fragment(R.layout.fragment_image){
@@ -46,9 +47,6 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
         var alpha = 1.0f
         binding.root.background.alpha = (alpha * 255).toInt()
-        val displayMetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
         var imageY = 0.0f
         binding.image.setOnTouchListener { v, event ->
 
@@ -65,19 +63,10 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
                     v.y = v.y + dy
 
-                    if (alpha <= 1.0) {
-                        alpha = v.y / imageY
-                    } else {
-                        alpha = (height - v.y)/(height - imageY)
-                    }
-
-                    if (alpha <= 0.0f || alpha >= height) {
-                        alpha = 0.0f
-                    }
-
-                    if (alpha <= 1.0f) {
-                        binding.root.background.alpha = (alpha * 255).toInt()
-                    }
+                    val diff = abs(imageY - v.y)
+                    alpha = 1 - diff/imageY
+                    if (alpha <= 0.0f) alpha = 0.0f
+                    binding.root.background.alpha = (alpha * 255).toInt()
 
                     y = event.rawY
 
@@ -85,7 +74,7 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
 
                 MotionEvent.ACTION_UP -> {
 
-                    if (v.y <= 10.0f || v.y >= height - 500.0f) {
+                    if (alpha <= 0.0f) {
                         activity?.supportFragmentManager?.popBackStackImmediate()
                     } else {
                         val changeAlpha = ValueAnimator.ofFloat(alpha, 1.0f)
