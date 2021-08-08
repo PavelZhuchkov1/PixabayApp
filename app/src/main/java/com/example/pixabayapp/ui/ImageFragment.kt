@@ -50,7 +50,6 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
         var imageY = 0.0f
         binding.image.setOnTouchListener { v, event ->
 
-
             when(event.action) {
 
                 MotionEvent.ACTION_DOWN -> {

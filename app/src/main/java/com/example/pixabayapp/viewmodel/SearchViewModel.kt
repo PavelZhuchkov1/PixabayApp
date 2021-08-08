@@ -6,18 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.pixabayapp.Error
 import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.search.service.ImageResponse
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.lang.Exception
 import java.net.UnknownHostException
 
 class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
+    val TAG = "SearchViewModel"
     private val _searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
     val searchResultFlow = _searchResultFlow.asStateFlow()
     val errorFlow = MutableSharedFlow<Error>()
+    val querySharedFlow: MutableSharedFlow<String> = MutableSharedFlow()
 
     data class ImageSummaryViewData(
         var original: String = "",
@@ -31,6 +32,26 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
             searchImage.src.small,
             searchImage.photographer,
         )
+    }
+
+
+    private fun search() {
+        viewModelScope.launch{
+            querySharedFlow
+                .map { query ->
+                    Log.d(TAG, "search: $query")
+                    searchRepo.search(query) }
+                .collect { response ->
+                    val images = response.photos
+                    _searchResultFlow.value = (images.map {image ->
+                        pixabayImageToImageSummaryView(image)})
+                }
+
+        }
+    }
+
+    fun onQueryChange(query: String) {
+        querySharedFlow.tryEmit(query)
     }
 
     fun searchImage(query: String) {
