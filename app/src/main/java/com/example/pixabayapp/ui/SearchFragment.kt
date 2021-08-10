@@ -19,6 +19,7 @@ import com.example.pixabayapp.ui.adapter.ImageListAdapter
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentSearchBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
+import com.example.pixabayapp.viewmodel.Utils
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -123,6 +124,7 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
     }
 
     override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
+        Utils.hideKeyboardFrom(context, this.view?.rootView)
         val imageFragment = ImageFragment.newInstance(imageSummaryViewData)
         activity?.supportFragmentManager?.commit {
             setReorderingAllowed(true)
