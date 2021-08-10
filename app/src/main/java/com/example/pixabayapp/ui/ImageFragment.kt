@@ -57,14 +57,16 @@ class ImageFragment : Fragment(R.layout.fragment_image){
         var alpha = 1.0f
         binding.root.background.alpha = (alpha * 255).toInt()
         var imageY = 0.0f
+        val animatorSet = AnimatorSet()
         binding.image.setOnTouchListener { v, event ->
-
 
             when(event.action) {
 
                 MotionEvent.ACTION_DOWN -> {
-                    y = event.rawY
-                    imageY = v.y
+                    if (!animatorSet.isRunning) {
+                        y = event.rawY
+                        imageY = v.y
+                    }
                 }
 
                 MotionEvent.ACTION_MOVE -> {
@@ -100,15 +102,13 @@ class ImageFragment : Fragment(R.layout.fragment_image){
                         }
                         moveImage.duration = 400
 
-                        AnimatorSet().apply {
+                        animatorSet.apply {
                             play(changeAlpha).with(moveImage)
                             start()
                         }
                     }
                 }
             }
-
-            Log.d(TAG, "onViewCreated: ${v.y}")
 
             true
         }
