@@ -123,7 +123,7 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
     }
 
     override fun onShowDetails(imageSummaryViewData: SearchViewModel.ImageSummaryViewData) {
-        val imageFragment = ImageFragment(imageSummaryViewData)
+        val imageFragment = ImageFragment.newInstance(imageSummaryViewData)
         activity?.supportFragmentManager?.commit {
             setReorderingAllowed(true)
             add(R.id.fragment_container_view, imageFragment)

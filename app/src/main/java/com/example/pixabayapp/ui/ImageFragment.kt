@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -17,12 +16,22 @@ import com.example.pixabayapp.viewmodel.SearchViewModel
 import kotlin.math.abs
 
 
-class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewData) : Fragment(R.layout.fragment_image){
+class ImageFragment : Fragment(R.layout.fragment_image){
 
     val TAG = javaClass.simpleName
     private lateinit var binding: FragmentImageBinding
     private var y = 0.0f
     private var dy = 0.0f
+
+    companion object {
+        fun newInstance(imageSummaryViewData: SearchViewModel.ImageSummaryViewData): ImageFragment {
+            val args = Bundle()
+            args.putString("original", imageSummaryViewData.original)
+            val imageFragment = ImageFragment()
+            imageFragment.arguments = args
+            return imageFragment
+        }
+    }
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,7 +51,7 @@ class ImageFragment(val imageSummaryViewData: SearchViewModel.ImageSummaryViewDa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Glide.with(this)
-            .load(imageSummaryViewData.original)
+            .load(arguments?.getString("original"))
             .into(binding.image)
 
         var alpha = 1.0f
