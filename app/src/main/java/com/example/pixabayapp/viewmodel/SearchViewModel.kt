@@ -1,12 +1,10 @@
 package com.example.pixabayapp.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pixabayapp.Error
 import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.search.service.ImageResponse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -57,21 +55,5 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
 
     fun onQueryChange(query: String) {
         querySharedFlow.tryEmit(query)
-    }
-
-    fun searchImage(query: String) {
-        viewModelScope.launch {
-            try {
-                val results = searchRepo.search(query)
-                val images = results.photos
-                _searchResultFlow.value = (images.map {image ->
-                    pixabayImageToImageSummaryView(image)})
-            } catch (e: Exception) {
-                when (e) {
-                    is UnknownHostException -> errorFlow.emit(Error.ConnectionError(message = "No Connection", e))
-                    is HttpException -> errorFlow.emit(Error.AuthorizationError(message = "Authorization error", e))
-                }
-            }
-        }
     }
 }

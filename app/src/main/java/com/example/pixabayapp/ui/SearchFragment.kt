@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.ImageListAdapterListener {
+class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.ImageListAdapterListener {
 
     val TAG = javaClass.simpleName
     private var _binding: FragmentSearchBinding? = null
@@ -93,22 +93,6 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
             }
 
         })
-        //This code for press enter search
-//        binding.editText.setOnKeyListener(object : View.OnKeyListener {
-//            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-//                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-//                    performSearch(binding.editText.text.toString())
-//                    return true
-//                }
-//                return false
-//            }
-//        })
-    }
-
-    private fun performSearch(query: String) {
-        showProgressBar()
-        searchViewModel.searchImage(query)
-
     }
 
     private fun updateControls() {

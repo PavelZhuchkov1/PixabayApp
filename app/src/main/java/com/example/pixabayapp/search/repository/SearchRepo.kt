@@ -7,7 +7,6 @@ import java.net.UnknownHostException
 class SearchRepo (private val searchService: SearchService) {
 
     suspend fun search(query: String): ImageResponse {
-        throw UnknownHostException()
         return searchService.searchImage(query)
     }
 }
