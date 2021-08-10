@@ -89,7 +89,7 @@ class SearchFragment() : Fragment(R.layout.fragment_search), ImageListAdapter.Im
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (s.length >= 3) performSearch(s.toString())
+                if (s.length >= 3) searchViewModel.onQueryChange(s.toString())
             }
 
         })
