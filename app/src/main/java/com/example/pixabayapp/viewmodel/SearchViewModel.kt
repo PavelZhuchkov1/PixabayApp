@@ -18,7 +18,28 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
     private val _searchResultFlow = MutableStateFlow<List<ImageSummaryViewData>>(emptyList())
     val searchResultFlow = _searchResultFlow.asStateFlow()
     val errorFlow = MutableSharedFlow<Error>()
-    val querySharedFlow: MutableSharedFlow<String> = MutableSharedFlow()
+    val querySharedFlow: MutableSharedFlow<String> = MutableSharedFlow(replay = 1)
+
+    init {
+        viewModelScope.launch{
+            querySharedFlow
+                .debounce(300)
+                .mapLatest { query ->
+                    searchRepo.search(query)
+                }
+                .catch {
+                    when (it) {
+                        is UnknownHostException -> errorFlow.emit(Error.ConnectionError(message = "No Connection", it))
+                        is HttpException -> errorFlow.emit(Error.AuthorizationError(message = "Authorization error", it))
+                    }
+                }
+                .collect { response ->
+                    val images = response.photos
+                    _searchResultFlow.value = (images.map {image ->
+                        pixabayImageToImageSummaryView(image)})
+                }
+        }
+    }
 
     data class ImageSummaryViewData(
         var original: String = "",
@@ -32,22 +53,6 @@ class SearchViewModel(private val searchRepo: SearchRepo) : ViewModel() {
             searchImage.src.small,
             searchImage.photographer,
         )
-    }
-
-
-    private fun search() {
-        viewModelScope.launch{
-            querySharedFlow
-                .map { query ->
-                    Log.d(TAG, "search: $query")
-                    searchRepo.search(query) }
-                .collect { response ->
-                    val images = response.photos
-                    _searchResultFlow.value = (images.map {image ->
-                        pixabayImageToImageSummaryView(image)})
-                }
-
-        }
     }
 
     fun onQueryChange(query: String) {
