@@ -4,6 +4,7 @@ import com.example.pixabayapp.search.repository.SearchRepo
 import com.example.pixabayapp.search.service.HeaderInterceptor
 import com.example.pixabayapp.search.service.SearchService
 import com.example.pixabayapp.ui.ImageFragment
+import com.example.pixabayapp.ui.SearchActivity
 import com.example.pixabayapp.ui.SearchFragment
 import dagger.Component
 import dagger.Module
@@ -17,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 interface AppComponent {
     fun inject(searchFragment: SearchFragment)
     fun inject2(imageFragment: ImageFragment)
+    fun inject3(searchActivity: SearchActivity)
 }
 
 @Module

@@ -45,6 +45,16 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
     lateinit var factory: ViewModelFactory.Factory
     private lateinit var imageListAdapter: ImageListAdapter
 
+    companion object {
+        fun newInstance(query: String) : SearchFragment {
+            val args = Bundle()
+            args.putString("query", query)
+            val searchFragment = SearchFragment()
+            searchFragment.arguments = args
+            return searchFragment
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity as SearchActivity).appComponent.inject(this)
@@ -61,8 +71,9 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListeners()
         updateControls()
+        val query: String = arguments?.getString("query").orEmpty()
+        searchViewModel.onQueryChange(query)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition = TransitionInflater.from(requireContext())
                 .inflateTransition(android.R.transition.explode)
@@ -78,8 +89,8 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
                 searchViewModel.errorFlow.collectLatest {
                     Log.d(TAG, "Error: $it")
                     when (it) {
-                        is Error.ConnectionError -> Snackbar.make(binding.editText, "No Connection", Snackbar.LENGTH_SHORT).show()
-                        is Error.AuthorizationError -> Snackbar.make(binding.editText, "Authorization error", Snackbar.LENGTH_SHORT).show()
+                        is Error.ConnectionError -> Snackbar.make(binding.recyclerView, "No Connection", Snackbar.LENGTH_SHORT).show()
+                        is Error.AuthorizationError -> Snackbar.make(binding.recyclerView, "Authorization error", Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -89,21 +100,6 @@ class SearchFragment : Fragment(R.layout.fragment_search), ImageListAdapter.Imag
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun setupListeners() {
-        binding.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                if (s.length >= 3) searchViewModel.onQueryChange(s.toString())
-            }
-
-        })
     }
 
     private fun updateControls() {
