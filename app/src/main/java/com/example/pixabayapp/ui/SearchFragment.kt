@@ -3,8 +3,6 @@ package com.example.pixabayapp.ui
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,11 +21,8 @@ import com.example.pixabayapp.ui.adapter.ImageListAdapter
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.FragmentSearchBinding
 import com.example.pixabayapp.viewmodel.SearchViewModel
-import com.example.pixabayapp.viewmodel.Utils
+import com.example.pixabayapp.Utils
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.Hold
-import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject

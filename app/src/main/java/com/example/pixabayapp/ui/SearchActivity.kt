@@ -9,17 +9,22 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.pixabayapp.R
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.ActivitySearchBinding
+import com.example.pixabayapp.viewmodel.MainViewModel
 import com.example.pixabayapp.viewmodel.SearchViewModel
 import com.example.pixabayapp.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchActivity : AppCompatActivity(){
 
     val TAG = javaClass.simpleName
     private lateinit var binding: ActivitySearchBinding
+    private val mainViewModel = MainViewModel()
 
     private val searchViewModel: SearchViewModel by viewModels{
         factory.create()
@@ -40,6 +45,16 @@ class SearchActivity : AppCompatActivity(){
                 add<EmptyFragment>(R.id.fragment_container_view)
             }
         }
+        lifecycleScope.launchWhenCreated {
+            launch {
+                mainViewModel.fragmentStateFlow.collectLatest {
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace(R.id.fragment_container_view, it)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -51,19 +66,7 @@ class SearchActivity : AppCompatActivity(){
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (s.length >= 3) {
-                    val searchFragment = SearchFragment.newInstance(s.toString())
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace(R.id.fragment_container_view, searchFragment)
-                    }
-                } else {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace<EmptyFragment>(R.id.fragment_container_view)
-                    }
-                }
-
+                mainViewModel.changeFragment(s.toString())
             }
 
         })

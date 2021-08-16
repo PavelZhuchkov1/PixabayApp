@@ -1,4 +1,4 @@
-package com.example.pixabayapp.viewmodel
+package com.example.pixabayapp
 
 import android.app.Activity
 import android.content.Context
