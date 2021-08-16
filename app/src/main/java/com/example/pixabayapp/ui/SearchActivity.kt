@@ -4,33 +4,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.activity.viewModels
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.fragment.app.replace
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.pixabayapp.R
 import com.example.pixabayapp.appComponent
 import com.example.pixabayapp.databinding.ActivitySearchBinding
 import com.example.pixabayapp.viewmodel.MainViewModel
-import com.example.pixabayapp.viewmodel.SearchViewModel
-import com.example.pixabayapp.viewmodel.ViewModelFactory
+import com.example.pixabayapp.viewmodel.MainViewModel.FragmentType.EMPTY
+import com.example.pixabayapp.viewmodel.MainViewModel.FragmentType.SEARCH
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SearchActivity : AppCompatActivity(){
 
     val TAG = javaClass.simpleName
     private lateinit var binding: ActivitySearchBinding
     private val mainViewModel = MainViewModel()
-
-    private val searchViewModel: SearchViewModel by viewModels{
-        factory.create()
-    }
-    @Inject
-    lateinit var factory: ViewModelFactory.Factory
+    private var query = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +41,12 @@ class SearchActivity : AppCompatActivity(){
                 mainViewModel.fragmentStateFlow.collectLatest {
                     supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        replace(R.id.fragment_container_view, it)
+                        replace(R.id.fragment_container_view,
+                                when(it) {
+                                    EMPTY -> EmptyFragment()
+                                    SEARCH -> SearchFragment.newInstance(query)
+                                }
+                            )
                     }
                 }
             }
@@ -66,9 +62,9 @@ class SearchActivity : AppCompatActivity(){
             }
 
             override fun afterTextChanged(s: Editable) {
-                mainViewModel.changeFragment(s.toString())
+                query = s.toString()
+                mainViewModel.changeFragment(query)
             }
-
         })
     }
 }
